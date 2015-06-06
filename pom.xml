@@ -60,7 +60,7 @@
         <version>0.12</version>
         <configuration>
           <server>github</server>
-          <message>Updated JavaDocs for ${version}</message>
+          <message>Updated JavaDocs for ${project.version}</message>
         </configuration>
         <executions>
           <execution>

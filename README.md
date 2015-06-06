@@ -4,6 +4,8 @@
 A Try is a completed attempt to compute a result that either succeeded or
 failed.
 
+## Quickstart
+
 Try is especially useful for monadic composition of tasks that may each fail,
 without having to use a series of nested try/catch statements.  You can form a
 Try using `attempt()` or `attemptApply()`:
@@ -60,6 +62,10 @@ assert number.get() == 123;
 
 In the case of a failed Try, `get()` will wrap the exception in a
 `RuntimeException`; its `Throwable.getCause()` will be the original exception.
+
+## API Docs
+
+The API docs are hosted [on Github Pages](http://zacharyvoase.github.io/try/apidocs/).
 
 
 ## Unlicense

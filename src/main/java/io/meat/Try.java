@@ -6,7 +6,71 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * A completed attempt to compute a Result that either succeeded or failed.
+ * A completed attempt to compute a result that either succeeded or failed.
+ *
+ * <p>Try is especially useful for monadic composition of tasks that may either
+ * succeed or fail, without having to use a series of nested try/catch
+ * statements. You can form a Try using {@link #attempt(Supplier)} or
+ * {@link #attemptApply(Function, Object)}:</p>
+ *
+ * <pre>{@code
+ * Try<String> value = Try.attempt(() -> keyValueStore.fetch("someKey"));
+ * Try<String> value = Try.attemptApply(keyValueStore::fetch, "someKey");
+ * }</pre>
+ *
+ * <p>If the function has checked exceptions, you can use
+ * {@link #attemptChecked(CheckedSupplier)} or
+ * {@link #attemptApplyChecked(CheckedFunction, Object)} to wrap any exception
+ * in a RuntimeException.</p>
+ *
+ * <p>You can also manually make a successful or failed Try using
+ * {@link #succeed(Object)} and {@link #fail(Throwable)}:</p>
+ *
+ * <pre>{@code
+ * Try<String> value = Try.succeed("someValue");
+ * Try<String> failure = Try.fail(new IllegalStateException("Something broke"));
+ * }</pre>
+ *
+ * <p>Once you have a Try, you can transform the value inside it using
+ * {@link #map(Function)}:</p>
+ *
+ * <pre>{@code
+ * Try<String> hex = Try.succeed(123).map(Integer::toHexString);
+ * assert hex.equals(Try.succeed("7b"));
+ * }</pre>
+ *
+ * <p>If your function returns a Try, you can use {@link #flatMap(Function)} to
+ * prevent nesting:</p>
+ *
+ * <pre>{@code
+ * Try<Integer> number = Try.succeed(123);
+ * Try<String> nextValue = number.flatMap(num -> {
+ *     return Try.succeed("a string");
+ * });
+ * assert nextValue.equals(Try.succeed("a string"));
+ * }</pre>
+ *
+ * <p>To get values back out of a Try, there are Optionals available as
+ * {@link #getResult()} and {@link #getFailure()} for safe retrieval of either
+ * state:</p>
+ *
+ * <pre>{@code
+ * Try<Integer> number = Try.succeed(123);
+ * assert number.getResult().equals(Optional.of(123));
+ * assert !number.getFailure().isPresent();
+ * }</pre>
+ *
+ * <p>If you've checked that a Try is successful, or you don't mind an (unchecked)
+ * exception being raised, use {@link #get()}:</p>
+ *
+ * <pre>{@code
+ * Try<Integer> number = Try.succeed(123);
+ * assert number.get() == 123;
+ * }</pre>
+ *
+ * <p>In the case of a failed Try, <tt>get()</tt> will wrap the exception in a
+ * <tt>RuntimeException</tt>; its {@link Throwable#getCause()} will be the
+ * original exception.</p>
  *
  * @param <Result> the type of result, if successful.
  */

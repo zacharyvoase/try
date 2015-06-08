@@ -11,6 +11,20 @@
   <description>A Try monad for Java 8</description>
   <url>https://github.com/zacharyvoase/try</url>
 
+  <developers>
+    <developer>
+      <name>Zachary Voase</name>
+      <email>zack@meat.io</email>
+      <url>https://twitter.com/meat</url>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:zacharyvoase/try.git</connection>
+    <developerConnection>scm:git:git@github.com:zacharyvoase/try.git</developerConnection>
+    <url>git@github.com:zacharyvoase/try.git</url>
+  </scm>
+
   <licenses>
     <license>
       <name>Unlicense</name>

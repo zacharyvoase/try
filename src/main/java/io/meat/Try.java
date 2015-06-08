@@ -2,6 +2,7 @@ package io.meat;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -170,6 +171,10 @@ public final class Try<Result> {
             return Try.fail(e);
         }
         return Try.succeed(result);
+    }
+
+    public static <Result> CompletableFuture<Try<Result>> wrapFuture(CompletableFuture<Result> future) {
+        return future.handle(Try::new);
     }
 
     /**

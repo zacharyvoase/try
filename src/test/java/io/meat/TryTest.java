@@ -3,6 +3,8 @@ package io.meat;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
 
@@ -155,6 +157,21 @@ public class TryTest {
                     error,
                     e.getCause());
         }
+    }
+
+    @Test
+    public void testStreamShouldRemoveFailedTrys() {
+        Stream<Try<Integer>> numberTries = Stream.of("123", "456", "abc", "789")
+                .map(s -> Try.attemptApply(Integer::parseInt, s));
+        Stream<Integer> numbers = Stream.of("123", "456", "abc", "789")
+                .map(s -> Try.attemptApply(Integer::parseInt, s))
+                .flatMap(Try::stream);
+        assertEquals("The original mapped stream should contain both failed and successful Trys",
+                4,
+                numberTries.toArray().length);
+        assertArrayEquals("A flatMapped stream of Trys should not contain entries for failures",
+                Stream.of(123, 456, 789).toArray(),
+                numbers.toArray());
     }
 
     @Test

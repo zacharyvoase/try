@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * A completed attempt to compute a result that either succeeded or failed.
@@ -206,6 +207,26 @@ public final class Try<Result> {
             throw new RuntimeException(failure);
         }
         return result;
+    }
+
+    /**
+     * Turn this Try into a Stream, for flatMapping a {@code Stream<Try<Result>>} into a {@code Stream<Result>}.
+     *
+     * <p>This method is particularly useful as an argument to <tt>Stream#flatMap()</tt>:</p>
+     *
+     * <pre>{@code
+     * Stream<String> strings = Stream.of("123", "456", "abc", "789");
+     * Stream<Integer> numbers = strings.map(s -> Try.attemptApply(Integer::parseInt, s)).flatMap(Try::stream);
+     * assert Arrays.equals(numbers.toArray(), Stream.of(123, 456, 789).toArray());
+     * }</pre>
+     *
+     * @return A single-element <tt>Stream.of(result)</tt> if this Try is successful, otherwise <tt>Stream.empty()</tt>
+     */
+    public Stream<Result> stream() {
+        if (result == null) {
+            return Stream.empty();
+        }
+        return Stream.of(result);
     }
 
     /**
